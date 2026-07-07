@@ -39,7 +39,10 @@ function renderResults(entries) {
     const preview = entry.text ? entry.text.slice(0, 140) : 'No page text captured.';
     return `
       <article class="memory-card">
-        <strong>${escapeHtml(entry.title || 'Untitled page')}</strong>
+        <div class="memory-card-header">
+          <strong>${escapeHtml(entry.title || 'Untitled page')}</strong>
+          <button class="delete-btn" data-url="${escapeHtml(entry.url)}" type="button" aria-label="Delete ${escapeHtml(entry.title || 'page')}">✕</button>
+        </div>
         <span class="memory-url">${escapeHtml(entry.url)}</span>
         <p class="memory-preview">${escapeHtml(preview)}</p>
       </article>
@@ -47,6 +50,14 @@ function renderResults(entries) {
   }).join('');
 
   resultsContainer.innerHTML = items;
+}
+
+async function deleteSavedPage(url) {
+  const { pages = {} } = await browser.storage.local.get('pages');
+  delete pages[url];
+  await browser.storage.local.set({ pages });
+  await loadSavedPages();
+  showStatus('Memory removed.', 'success');
 }
 
 async function loadSavedPages() {
@@ -103,6 +114,18 @@ async function saveCurrentPage() {
     saveButton.textContent = 'Remember This Page';
   }
 }
+
+resultsContainer.addEventListener('click', async (event) => {
+  const deleteButton = event.target.closest('.delete-btn');
+  if (!deleteButton) {
+    return;
+  }
+
+  const url = deleteButton.getAttribute('data-url');
+  if (url) {
+    await deleteSavedPage(url);
+  }
+});
 
 searchInput.addEventListener('input', async () => {
   const query = searchInput.value.trim().toLowerCase();

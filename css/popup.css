@@ -194,11 +194,33 @@ body {
   padding: 16px 10px;
 }
 
+.memory-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
 .memory-card strong {
   display: block;
   font-size: 13px;
   color: var(--text);
-  margin-bottom: 3px;
+  margin-bottom: 0;
+}
+
+.delete-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  padding: 2px;
+}
+
+.delete-btn:hover {
+  color: #b42318;
 }
 
 .memory-url {
