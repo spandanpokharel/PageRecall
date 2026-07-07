@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>PageRecall</title>
+  <style>
+    body { width: 300px; font-family: sans-serif; padding: 10px; }
+    button { width: 100%; padding: 8px; margin-bottom: 10px; cursor: pointer; }
+    input { width: 100%; padding: 6px; box-sizing: border-box; margin-bottom: 10px; }
+    #results { max-height: 200px; overflow-y: auto; }
+  </style>
+</head>
+<body>
+  <h3>🧠 PageRecall</h3>
+  <button id="save-btn">Remember This Page</button>
+  
+  <hr>
+  
+  <input type="text" id="search-input" placeholder="Search your memory...">
+  <div id="results"></div>
+  <script src="popup.js"></script>
+</body>
+</html>

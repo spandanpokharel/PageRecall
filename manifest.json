@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "PageRecall",
+  "version": "1.0",
+  "description": "Locally index and search web pages using AI.",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  }
+}
