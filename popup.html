@@ -5,7 +5,7 @@
   <title>PageRecall</title>
   <style>
     :root {
-      color-scheme: light dark;
+      color-scheme: light;
       --bg: #07111f;
       --panel: rgba(255, 255, 255, 0.95);
       --panel-alt: #f5f7ff;
@@ -15,6 +15,21 @@
       --accent-2: #7c4dff;
       --border: #dfe7ff;
       --shadow: 0 12px 30px rgba(11, 20, 35, 0.14);
+      --card-bg: #ffffff;
+    }
+
+    body[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #020617;
+      --panel: rgba(15, 23, 42, 0.95);
+      --panel-alt: #172033;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #8b9cff;
+      --accent-2: #a78bfa;
+      --border: #334155;
+      --shadow: 0 16px 36px rgba(2, 6, 23, 0.4);
+      --card-bg: #111827;
     }
 
     * { box-sizing: border-box; }
@@ -25,8 +40,9 @@
       margin: 0;
       padding: 14px;
       font-family: Inter, "Segoe UI", Roboto, sans-serif;
-      background: linear-gradient(135deg, #0f172a 0%, #172554 45%, #312e81 100%);
+      background: linear-gradient(135deg, var(--bg) 0%, #172554 45%, #312e81 100%);
       color: var(--text);
+      transition: background 0.25s ease, color 0.25s ease;
     }
 
     .app {
@@ -38,6 +54,7 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+      transition: background 0.25s ease, border-color 0.25s ease;
     }
 
     .hero {
@@ -54,7 +71,7 @@
       gap: 8px;
       font-weight: 700;
       font-size: 16px;
-      color: #111827;
+      color: var(--text);
     }
 
     .brand-badge {
@@ -73,6 +90,21 @@
       font-size: 11px;
       color: var(--muted);
       margin-top: 2px;
+    }
+
+    .theme-toggle {
+      border: 1px solid var(--border);
+      background: var(--panel-alt);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 6px 8px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: transform 0.15s ease, background 0.2s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-1px);
     }
 
     .primary-btn {
@@ -148,11 +180,17 @@
 
     .empty-state,
     .memory-card {
-      background: white;
+      background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 10px;
       box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .memory-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
     }
 
     .empty-state {
@@ -180,7 +218,7 @@
     .memory-preview {
       margin: 0;
       font-size: 11px;
-      color: #334155;
+      color: var(--muted);
       line-height: 1.4;
     }
   </style>
@@ -195,6 +233,7 @@
         </div>
         <div class="subtext">Your private memory vault for the web</div>
       </div>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme">🌙</button>
     </div>
 
     <button id="save-btn" class="primary-btn">Remember This Page</button>

@@ -2,6 +2,7 @@ const saveButton = document.getElementById('save-btn');
 const searchInput = document.getElementById('search-input');
 const resultsContainer = document.getElementById('results');
 const statusElement = document.getElementById('status');
+const themeToggle = document.getElementById('theme-toggle');
 
 function escapeHtml(value) {
   return String(value)
@@ -15,6 +16,17 @@ function escapeHtml(value) {
 function showStatus(message, type = '') {
   statusElement.textContent = message;
   statusElement.className = `status ${type}`.trim();
+}
+
+async function applyTheme(theme) {
+  document.body.dataset.theme = theme;
+  themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+  await browser.storage.local.set({ theme });
+}
+
+async function initTheme() {
+  const { theme = 'light' } = await browser.storage.local.get('theme');
+  await applyTheme(theme);
 }
 
 function renderResults(entries) {
@@ -109,5 +121,11 @@ searchInput.addEventListener('input', async () => {
   renderResults(filtered);
 });
 
+themeToggle.addEventListener('click', async () => {
+  const nextTheme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+  await applyTheme(nextTheme);
+});
+
 saveButton.addEventListener('click', saveCurrentPage);
+initTheme();
 loadSavedPages();
