@@ -4,20 +4,210 @@
   <meta charset="utf-8">
   <title>PageRecall</title>
   <style>
-    body { width: 300px; font-family: sans-serif; padding: 10px; }
-    button { width: 100%; padding: 8px; margin-bottom: 10px; cursor: pointer; }
-    input { width: 100%; padding: 6px; box-sizing: border-box; margin-bottom: 10px; }
-    #results { max-height: 200px; overflow-y: auto; }
+    :root {
+      color-scheme: light dark;
+      --bg: #07111f;
+      --panel: rgba(255, 255, 255, 0.95);
+      --panel-alt: #f5f7ff;
+      --text: #14213d;
+      --muted: #64748b;
+      --accent: #5b7cff;
+      --accent-2: #7c4dff;
+      --border: #dfe7ff;
+      --shadow: 0 12px 30px rgba(11, 20, 35, 0.14);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      width: 340px;
+      min-height: 420px;
+      margin: 0;
+      padding: 14px;
+      font-family: Inter, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #172554 45%, #312e81 100%);
+      color: var(--text);
+    }
+
+    .app {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 4px 2px 6px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 16px;
+      color: #111827;
+    }
+
+    .brand-badge {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      font-size: 18px;
+      box-shadow: 0 8px 16px rgba(91, 124, 255, 0.25);
+    }
+
+    .subtext {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .primary-btn {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-weight: 600;
+      cursor: pointer;
+      color: white;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 10px 20px rgba(91, 124, 255, 0.2);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 22px rgba(91, 124, 255, 0.26);
+    }
+
+    .primary-btn:disabled {
+      opacity: 0.75;
+      cursor: wait;
+      transform: none;
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--panel-alt);
+      border-radius: 999px;
+      padding: 9px 12px 9px 34px;
+      outline: none;
+      color: var(--text);
+    }
+
+    .search-box input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(91, 124, 255, 0.16);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 13px;
+      pointer-events: none;
+    }
+
+    .status {
+      min-height: 18px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .status.success { color: #137333; }
+    .status.error { color: #b42318; }
+
+    #results {
+      max-height: 220px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 2px;
+    }
+
+    .empty-state,
+    .memory-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+    }
+
+    .empty-state {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      padding: 16px 10px;
+    }
+
+    .memory-card strong {
+      display: block;
+      font-size: 13px;
+      color: #111827;
+      margin-bottom: 3px;
+    }
+
+    .memory-url {
+      display: block;
+      font-size: 10px;
+      color: var(--muted);
+      margin-bottom: 4px;
+      word-break: break-all;
+    }
+
+    .memory-preview {
+      margin: 0;
+      font-size: 11px;
+      color: #334155;
+      line-height: 1.4;
+    }
   </style>
 </head>
 <body>
-  <h3>🧠 PageRecall</h3>
-  <button id="save-btn">Remember This Page</button>
-  
-  <hr>
-  
-  <input type="text" id="search-input" placeholder="Search your memory...">
-  <div id="results"></div>
+  <div class="app">
+    <div class="hero">
+      <div>
+        <div class="brand">
+          <span class="brand-badge">🧠</span>
+          <span>PageRecall</span>
+        </div>
+        <div class="subtext">Your private memory vault for the web</div>
+      </div>
+    </div>
+
+    <button id="save-btn" class="primary-btn">Remember This Page</button>
+
+    <div class="search-box">
+      <span class="search-icon">🔎</span>
+      <input type="text" id="search-input" placeholder="Search your memory...">
+    </div>
+
+    <div id="status" class="status" aria-live="polite"></div>
+    <div id="results"></div>
+  </div>
+
   <script src="popup.js"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 const saveButton = document.getElementById('save-btn');
 const searchInput = document.getElementById('search-input');
 const resultsContainer = document.getElementById('results');
+const statusElement = document.getElementById('status');
 
 function escapeHtml(value) {
   return String(value)
@@ -11,20 +12,25 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
+function showStatus(message, type = '') {
+  statusElement.textContent = message;
+  statusElement.className = `status ${type}`.trim();
+}
+
 function renderResults(entries) {
   if (!entries.length) {
-    resultsContainer.innerHTML = '<p>No saved pages yet.</p>';
+    resultsContainer.innerHTML = '<div class="empty-state">No memories saved yet. Save a page to build your private library.</div>';
     return;
   }
 
   const items = entries.map((entry) => {
     const preview = entry.text ? entry.text.slice(0, 140) : 'No page text captured.';
     return `
-      <div style="margin-bottom: 10px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-        <strong>${escapeHtml(entry.title || 'Untitled page')}</strong><br>
-        <small>${escapeHtml(entry.url)}</small>
-        <p style="margin: 4px 0 0; font-size: 12px;">${escapeHtml(preview)}</p>
-      </div>
+      <article class="memory-card">
+        <strong>${escapeHtml(entry.title || 'Untitled page')}</strong>
+        <span class="memory-url">${escapeHtml(entry.url)}</span>
+        <p class="memory-preview">${escapeHtml(preview)}</p>
+      </article>
     `;
   }).join('');
 
@@ -44,6 +50,7 @@ async function loadSavedPages() {
 async function saveCurrentPage() {
   saveButton.disabled = true;
   saveButton.textContent = 'Saving...';
+  showStatus('Capturing page contents…', '');
 
   try {
     const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
@@ -75,10 +82,10 @@ async function saveCurrentPage() {
 
     await browser.storage.local.set({ pages });
     await loadSavedPages();
-    resultsContainer.innerHTML = `<p style="color: green;">Saved to your local memory.</p>${resultsContainer.innerHTML}`;
+    showStatus('Saved to your local memory.', 'success');
   } catch (error) {
     console.error('Failed to save page:', error);
-    resultsContainer.innerHTML = '<p style="color: red;">Could not save this page.</p>';
+    showStatus('Could not save this page.', 'error');
   } finally {
     saveButton.disabled = false;
     saveButton.textContent = 'Remember This Page';
