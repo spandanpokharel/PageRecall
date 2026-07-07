@@ -73,7 +73,7 @@ async function saveCurrentPage() {
 
     const results = await browser.scripting.executeScript({
       target: { tabId: tab.id },
-      files: ['content.js']
+      files: ['scripts/content.js']
     });
 
     const pageData = results?.[0]?.result;
